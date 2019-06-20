@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreMicroservices.ApiGateway", "src\NetCoreMicroservices.ApiGateway\NetCoreMicroservices.ApiGateway.csproj", "{0C6A6DF8-B058-45E4-A0FE-F2430FECFB83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreMicroservices.ApiGateway", "src\ApiGateway\NetCoreMicroservices.ApiGateway\NetCoreMicroservices.ApiGateway.csproj", "{0C6A6DF8-B058-45E4-A0FE-F2430FECFB83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
