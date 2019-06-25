@@ -2,12 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build Identity",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ApiGateway/MS.ApiGateway/MS.ApiGateway.csproj"
+                "${workspaceFolder}/MS.Identity/MS.Identity.csproj"
             ],
             "problemMatcher": "$tsc"
         },

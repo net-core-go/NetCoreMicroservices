@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MS.Identity {
     public static class IWebHostExtension {
@@ -12,12 +13,12 @@ namespace MS.Identity {
             using (var scope = webHost.Services.CreateScope ()) {
                 var services = scope.ServiceProvider;
 
-                //var logger = services.GetRequiredService<ILogger<TContext>>();
+                var logger = services.GetRequiredService<ILogger<TContext>>();
 
                 var context = services.GetService<TContext> ();
 
                 try {
-                    //logger.LogInformation("Migrating database associated with context {DbContextName}", typeof(TContext).Name);
+                    logger.LogInformation("Migrating database associated with context {DbContextName}", typeof(TContext).Name);
 
                     var retry = Policy.Handle<SqlException> ()
                         .WaitAndRetry (new TimeSpan[] {
@@ -32,9 +33,9 @@ namespace MS.Identity {
                     // Note that this is NOT applied when running some orchestrators (let the orchestrator to recreate the failing service)
                     retry.Execute (() => InvokeSeeder (seeder, context, services));
 
-                    //logger.LogInformation("Migrated database associated with context {DbContextName}", typeof(TContext).Name);
+                    logger.LogInformation("Migrated database associated with context {DbContextName}", typeof(TContext).Name);
                 } catch (Exception ex) {
-                    //logger.LogError (ex, "An error occurred while migrating the database used on context {DbContextName}", typeof (TContext).Name);
+                    logger.LogError (ex, "An error occurred while migrating the database used on context {DbContextName}", typeof (TContext).Name);
                 }
             }
 

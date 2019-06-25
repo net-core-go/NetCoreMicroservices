@@ -7,17 +7,29 @@ using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MS.Identity.Data;
+using Serilog;
+using Serilog.Events;
 
 namespace MS.Identity {
     public class Program {
         public static void Main (string[] args) {
+            var configuration =GetConfiguration();
             var host = CreateWebHostBuilder (args).Build ();
+            Log.Logger = new LoggerConfiguration()
+                                .MinimumLevel.Debug()
+                                .MinimumLevel.Override("Microsoft",LogEventLevel.Warning)
+                                .Enrich.FromLogContext()
+                                .WriteTo.File("log.txt",rollOnFileSizeLimit:true,rollingInterval:RollingInterval.Day)
+                                .CreateLogger();
+
             host.MigrateDbContext<PersistedGrantDbContext> ((_, __) => { })
                 .MigrateDbContext<ApplicationDbContext> ((context, services) => {
                     var env = services.GetService<IHostingEnvironment> ();
-                    //var logger = services.GetService<ILogger<ApplicationDbContextSeed>> ();
+                    var logger = services.GetService<ILogger<ApplicationDbContextSeed>> ();
                     var settings = services.GetService<IOptions<AppSettings>> ();
 
                     new ApplicationDbContextSeed ()
@@ -35,6 +47,17 @@ namespace MS.Identity {
 
         public static IWebHostBuilder CreateWebHostBuilder (string[] args) =>
             WebHost.CreateDefaultBuilder (args)
-            .UseStartup<Startup> ();
+            .UseStartup<Startup> ()
+            .UseSerilog();
+
+        private static IConfiguration GetConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            return builder.Build();
+        }
     }
 }
