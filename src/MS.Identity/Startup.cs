@@ -68,8 +68,13 @@ namespace MS.Identity
                 })
             .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>()
             .Services.AddTransient<IProfileService, CustomProfileService>();
-
-
+/**************************************************************************************************************************/
+//              services.AddSingleton<IClientStore, MyClientStore>();   //注入IClientStore的实现，可用于运行时校验Client
+//              services.AddSingleton<IScopeStore, MyScopeStore>();    //注入IScopeStore的实现，可用于运行时校验Scope
+//              //注入IPersistedGrantStore的实现，用于存储AuthorizationCode和RefreshToken等等，默认实现是存储在内存中，
+//              //如果服务重启那么这些数据就会被清空了，因此可实现IPersistedGrantStore将这些数据写入到数据库或者NoSql(Redis)中
+//              services.AddSingleton<IPersistedGrantStore, MyPersistedGrantStore>();
+/**************************************************************************************************************************/
             var container = services.ToServiceContainer();
             container.AddType<IUserStore,UserStore>(Lifetime.Scoped);
             return container.Build();

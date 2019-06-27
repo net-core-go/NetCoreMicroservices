@@ -23,9 +23,10 @@ namespace MS.Identity {
                                 .MinimumLevel.Debug()
                                 .MinimumLevel.Override("Microsoft",LogEventLevel.Warning)
                                 .Enrich.FromLogContext()
-                                .WriteTo.File("log.txt",rollOnFileSizeLimit:true,rollingInterval:RollingInterval.Day)
+                                .WriteTo.File("logs/log.txt",rollOnFileSizeLimit:true,rollingInterval:RollingInterval.Day)
                                 .CreateLogger();
-
+            //授权服务器中生成的RefreshToken和AuthorizationCode默认是存储在内存中的，
+            //因此如果服务重启这些数据就失效了，那么就需要实现IPersistedGrantStore接口对这些数据的存储
             host.MigrateDbContext<PersistedGrantDbContext> ((_, __) => { })
                 .MigrateDbContext<ApplicationDbContext> ((context, services) => {
                     var env = services.GetService<IHostingEnvironment> ();
